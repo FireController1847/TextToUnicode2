@@ -51,6 +51,8 @@ M_WRITECONSOLE MACRO W_STR, W_STRLEN
     MOV RCX, StdOutHandle
     LEA RDX, W_STR
     MOV R8, W_STRLEN
+    XOR R9, R9
+    MOV QWORD PTR [RSP + 20h], 0
     CALL WriteConsoleW
     CMP RAX, 0
     JZ Crash
@@ -81,8 +83,8 @@ m_copywstr::
 ENDM
 
 M_UTF16LE_REMOVECRLF MACRO W_STR, W_STRLEN
-    LEA RCX, PTR_STR
-    MOV RDX, QWORD PTR STR_CHARS
+    LEA RCX, W_STR
+    MOV RDX, QWORD PTR W_STRLEN
     ADD RCX, RDX
     ADD RCX, RDX
     SUB RCX, 4
@@ -173,7 +175,6 @@ p_shr_loop_exit::
     SHL RAX, 16
 p_shl_skip:
     JNZ p_loop
-    SHL RAX, 8
 
     ; Epilog
     ADD RSP, 20h
